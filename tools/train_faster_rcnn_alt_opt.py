@@ -49,6 +49,9 @@ def parse_args():
     parser.add_argument('--set', dest='set_cfgs',
                         help='set config keys', default=None,
                         nargs=argparse.REMAINDER)
+    parser.add_argument('--pt_type', dest='pt_type',
+                        help='prototype to use',
+                        default='pascal_voc', type=str)
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -67,7 +70,7 @@ def get_roidb(imdb_name, rpn_file=None):
     roidb = get_training_roidb(imdb)
     return roidb, imdb
 
-def get_solvers(net_name):
+def get_solvers(net_name, pt_type):
     # Faster R-CNN Alternating Optimization
     n = 'faster_rcnn_alt_opt'
     # Solver for each training stage
@@ -75,13 +78,16 @@ def get_solvers(net_name):
                [net_name, n, 'stage1_fast_rcnn_solver30k40k.pt'],
                [net_name, n, 'stage2_rpn_solver60k80k.pt'],
                [net_name, n, 'stage2_fast_rcnn_solver30k40k.pt']]
-    solvers = [os.path.join(cfg.MODELS_DIR, *s) for s in solvers]
+
+    abs_pt_type = os.path.join(cfg.ROOT_DIR, 'models', pt_type)
+    
+    solvers = [os.path.join(abs_pt_type, *s) for s in solvers]
     # Iterations for each training stage
     max_iters = [80000, 40000, 80000, 40000]
     # max_iters = [100, 100, 100, 100]
     # Test prototxt for the RPN
     rpn_test_prototxt = os.path.join(
-        cfg.MODELS_DIR, net_name, n, 'rpn_test.pt')
+        abs_pt_type, net_name, n, 'rpn_test.pt')
     return solvers, max_iters, rpn_test_prototxt
 
 # ------------------------------------------------------------------------------
@@ -222,7 +228,7 @@ if __name__ == '__main__':
     # queue for communicated results between processes
     mp_queue = mp.Queue()
     # solves, iters, etc. for each training stage
-    solvers, max_iters, rpn_test_prototxt = get_solvers(args.net_name)
+    solvers, max_iters, rpn_test_prototxt = get_solvers(args.net_name, args.pt_type)
 
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     print 'Stage 1 RPN, init from ImageNet model'
