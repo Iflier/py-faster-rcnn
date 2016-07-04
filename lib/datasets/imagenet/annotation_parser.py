@@ -7,7 +7,7 @@ def getText(node):
 def getClassId(node):
 	return getText(node.getElementsByTagName("name")[0])
 
-def getFileName(node):
+def getImageName(node):
 	return getText(node.getElementsByTagName("filename")[0])
 
 def getBoxs(node):
@@ -21,11 +21,11 @@ def getBoxs(node):
 		})
 	return boxs
 
-def parse(filepath, ext='.JPEG'):
+def parse(filepath):
 	dom = xml.dom.minidom.parse(filepath)
 	root = dom.documentElement
-	filename = getFileName(root) + ext
+	image_name = getImageName(root)
 	class_id = getClassId(root)
 	boxs = getBoxs(root)
 	
-	return class_id, filename, boxs
+	return class_id, image_name, boxs
