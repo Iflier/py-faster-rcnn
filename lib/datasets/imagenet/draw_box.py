@@ -2,7 +2,7 @@ import cv2
 import os
 import annotation_parser as ap
 
-path = "data"
+path = "data/imagenet"
 annotations_path = os.path.join(path, "Annotations")
 images_path = os.path.join(path, "Images")
 images_withbox_path = os.path.join(path, "Images_withbox")
