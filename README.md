@@ -25,9 +25,13 @@ To draw the boxes on image to new file, run:
 ###Train
 
 To train on this dataset, you need to prepare the next steps:
-1.change the classes in `./lib/datasets/imagenet/imagenet.py`
-2.change the classes num in pt file under `./model/imagenet/{NET}`
-3._fetch pretrained models by run `./data/scripts/fetch_imagenet_models.sh`(optional)_
+
+
+1. change the classes in `./lib/datasets/imagenet/imagenet.py`
+2. change the classes num in pt file under `./model/imagenet/{NET}`
+3. _fetch pretrained models by run `./data/scripts/fetch_imagenet_models.sh`(optional)_
+
+
 if your wanna train 'car,dog' classes, so the num will be 3 because of '\_\_background\_\_',change the value in above layers in each files
 ```
 input-data->num_classes = num
@@ -50,7 +54,7 @@ In this script, only pt_type is new, the use of others arguments you could see i
 
 
 ###Classifier
-```
+
 Change the classes in `./tools/classify`
 then run:
 ```
