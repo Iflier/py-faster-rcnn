@@ -124,7 +124,7 @@ class imagenet(imdb):
         Load image and bounding boxes info from XML file in the ImageNet format
         """
         filepath = os.path.join(self._data_path, 'Annotations', xml_filename + '.xml')
-        class_id, image_name, boxs = ap.parse(filepath)
+        wnid, image_name, objects = ap.parse(filepath)
         num_objs = len(boxs)
 
         boxes = np.zeros((num_objs, 4), dtype=np.uint16)
@@ -133,12 +133,13 @@ class imagenet(imdb):
         seg_areas = np.zeros((num_objs), dtype=np.float32)
 
         # Load object bounding boxes into a data frame.
-        for ix, box in enumerate(boxs):
+        for ix, obj in enumerate(objects):
+            box = obj["box"]
             x1 = box['xmin']
             y1 = box['ymin']
             x2 = box['xmax']
             y2 = box['ymax']
-            cls = self._class_to_ind[class_id]
+            cls = self._class_to_ind[obj.wnid]
             boxes[ix, :] = [x1, y1, x2, y2]
             gt_classes[ix] = cls
             overlaps[ix, cls] = 1.0
