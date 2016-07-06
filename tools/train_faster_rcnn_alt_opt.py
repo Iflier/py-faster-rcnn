@@ -50,7 +50,7 @@ def parse_args():
                         help='set config keys', default=None,
                         nargs=argparse.REMAINDER)
     parser.add_argument('--pt_type', dest='pt_type',
-                        help='prototype to use',
+                        help='prototxt to use',
                         default='pascal_voc', type=str)
 
     if len(sys.argv) == 1:
