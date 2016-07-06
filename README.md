@@ -42,9 +42,9 @@ These prototxt was copied from pascal_voc path, so you could copy the prototxt f
 
 then just need to run:
 ```
-./tools/train_faster_rcnn_alt_opt.py --gpu 0\
+./tools/train_faster_rcnn_alt_opt.py --gpu 0 \
 --net_name ZF \
---weights data/imagenet_models/ZF.v2.caffemodel \
+--weights data/imagenet_models/ZF.v2.caffemodel[optional] \
 --imdb imagenet \
 --cfg experiments/cfgs/faster_rcnn_alt_opt.yml \
 --pt_type imagenet
