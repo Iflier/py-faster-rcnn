@@ -25,11 +25,14 @@ class imagenet(imdb):
         imdb.__init__(self, 'imagenet')
         self._image_set = image_set
         self._data_path = os.path.join(cfg.DATA_DIR, "imagenet")
-        self._class_ids = {
-            'cup': 'n03147509'
+        
+        self._class_wnids = {
+            'cup': 'n03147509',
+            'glasses': 'n04272054'
         }
-        self._classes = ('__background__', self._class_ids['cup'])
+        self._classes = ('__background__', self._class_wnids['cup'], self._class_wnids['glasses'])
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
+        print(self._class_to_ind)
         self._xml_path = os.path.join(self._data_path, "Annotations")
         self._image_ext = '.JPEG'
 	# the xml file name and each one corresponding to image file name
@@ -125,7 +128,7 @@ class imagenet(imdb):
         """
         filepath = os.path.join(self._data_path, 'Annotations', xml_filename + '.xml')
         wnid, image_name, objects = ap.parse(filepath)
-        num_objs = len(boxs)
+        num_objs = len(objects)
 
         boxes = np.zeros((num_objs, 4), dtype=np.uint16)
         gt_classes = np.zeros((num_objs), dtype=np.int32)
@@ -139,7 +142,12 @@ class imagenet(imdb):
             y1 = box['ymin']
             x2 = box['xmax']
             y2 = box['ymax']
-            cls = self._class_to_ind[obj.wnid]
+            # go next if the wnid not exist in declared classes
+            try:
+                cls = self._class_to_ind[obj["wnid"]]
+            except KeyError:
+		print("wnid %s isn't show in given", obj["wnid"])
+                continue
             boxes[ix, :] = [x1, y1, x2, y2]
             gt_classes[ix] = cls
             overlaps[ix, cls] = 1.0

@@ -16,9 +16,8 @@ for wnid_xml in list(os.walk(annotations_path))[0][2]:
 	image_full_name = image_name + ".JPEG"	
 
 	img = cv2.imread(os.path.join(images_path, image_full_name))
-	print(objects)
+	#if img is None: continue
 	for obj in objects:
-		print(obj)
 		box = obj["box"]
 		cv2.rectangle(img, (box["xmin"], box["ymin"]), (box["xmax"], box["ymax"]), (0, 255, 0), 1, 0)
 	cv2.imwrite(os.path.join(images_withbox_path, image_full_name), img)

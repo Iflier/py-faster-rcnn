@@ -24,10 +24,12 @@ import caffe, os, sys, cv2
 import argparse
 import socket
 
-CLASSES = ('__background__', 'cup')
+CLASSES = ('__background__', 'cup', 'glasses')
 
 NETS = {'vgg16': ('VGG16',
                   'VGG16_faster_rcnn_final.caffemodel'),
+        'vgg_cnn_m_1024': ('VGG_CNN_M_1024',
+                  'VGG_CNN_M_1024_faster_rcnn_final.caffemodel'),
         'zf': ('ZF',
                   'ZF_faster_rcnn_final.caffemodel')}
 
