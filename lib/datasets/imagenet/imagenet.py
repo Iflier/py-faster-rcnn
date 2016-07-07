@@ -146,7 +146,7 @@ class imagenet(imdb):
             try:
                 cls = self._class_to_ind[obj["wnid"]]
             except KeyError:
-		print("wnid %s isn't show in given", obj["wnid"])
+		print "wnid %s isn't show in given"%obj["wnid"]
                 continue
             boxes[ix, :] = [x1, y1, x2, y2]
             gt_classes[ix] = cls

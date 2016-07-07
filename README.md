@@ -8,7 +8,7 @@ First, we could download the image files by classes with bounding boxes, so we s
 
 Untar the images and bounding boxes annotations we downloaded from [imagenet](http://imagenet.org) by [wnid] to above tree:
 ```
-!---data
+|---data
   |---imagenet
     |---Annotations
     |---Images
@@ -18,7 +18,7 @@ In fact the annotation xml files will less than image files, so we need to use e
 
 base on the upstream, this project add imagenet dataset get function in to `dataset.factory`, and the drawing box for checking whether the boxes at right place in image.
 
-To draw the boxes on image to new file, run:
+To draw the bounding boxes on image to new images, run:
 ```
 ./lib/datasets/imagenet/draw.py
 ```
@@ -55,10 +55,10 @@ In this script, only pt_type is new, the use of others arguments you could see i
 
 ###Classifier
 
-Change the classes in `./tools/classify`
+Change the classes in `./tools/classify.py`
 then run:
 ```
-./tools/classify --net zf
+./tools/classify.py --net zf
 ```
 
 so we could get the object detected image like deom.py works.
