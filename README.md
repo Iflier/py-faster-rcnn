@@ -2,7 +2,7 @@
 
 -----
 
-Tutorial: [http://www.cnblogs.com/zhiyishou/p/5651321.html](http://www.cnblogs.com/zhiyishou/p/5651321.html)
+Tutorial: [http://www.cnblogs.com/zhiyishou/p/5651321.html](http://www.cnblogs.com/zhiyishou/p/5651321.html) _\[In Chinese\]_
 
 ##Train ImageNet dataset on faster-rcnn
 
