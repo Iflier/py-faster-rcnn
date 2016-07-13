@@ -14,6 +14,7 @@ See README.md for installation instructions before running.
 """
 import _init_paths
 import os
+import json
 from fast_rcnn.config import cfg
 from fast_rcnn.test import im_detect
 from fast_rcnn.nms_wrapper import nms
@@ -34,18 +35,21 @@ NETS = {'vgg16': ('VGG16',
                   'ZF_faster_rcnn_final.caffemodel')}
 
 
-def vis_detections(im, class_name, dets, thresh=0.5):
+def vis_detections(im, class_name, dets, return_boxes, thresh=0.5):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
+    boxes = []
 
     for i in inds:
         bbox = dets[i, :4]
         score = dets[i, -1]
-        cv2.rectangle(im, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 255, 0), 0)
-        cv2.putText(im, '{:s} {:.3f}'.format(class_name, score), (bbox[0], bbox[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0))
-    cv2.imshow("image", im)
+        boxes.append({"bbox": [int(value) for value in bbox.tolist()], "score": float(score)})
+        if not return_boxes:
+	    cv2.rectangle(im, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 255, 0), 0)
+            cv2.putText(im, '{:s} {:.3f}'.format(class_name, score), (bbox[0], bbox[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0))
+    return boxes
 
-def demo(net, im):
+def demo(net, im, return_boxes):
     """Detect object classes in an image using pre-computed object proposals."""
     # Detect all object classes and regress object bounds
     timer = Timer()
@@ -58,6 +62,7 @@ def demo(net, im):
     # Visualize detections for each class
     CONF_THRESH = 0.8
     NMS_THRESH = 0.3
+    classes = {}
     for cls_ind, cls in enumerate(CLASSES[1:]):
         cls_ind += 1 # because we skipped background
         cls_boxes = boxes[:, 4*cls_ind:4*(cls_ind + 1)]
@@ -66,7 +71,11 @@ def demo(net, im):
                           cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
-        vis_detections(im, cls, dets, thresh=CONF_THRESH)
+        bboxes = vis_detections(im, cls, dets, return_boxes, thresh=CONF_THRESH)
+        classes[cls] = bboxes
+    if not return_boxes:
+        cv2.imshow("image", im)
+    return classes
 
 def parse_args():
     """Parse input arguments."""
@@ -78,8 +87,11 @@ def parse_args():
                         action='store_true')
     parser.add_argument('--net', dest='demo_net', help='Network to use [vgg16]',
                         choices=NETS.keys(), default='vgg16')
+    parser.add_argument('--return', dest='return_boxes', default=False,
+                        help='whatever return the boxes information')
 
     args = parser.parse_args()
+    args.return_boxes = args.return_boxes == 'True'
 
     return args
 
@@ -129,7 +141,8 @@ if __name__ == '__main__':
 
     while True:
         conn, addr = s.accept()
-        cv2.namedWindow("image")
+	if not args.return_boxes:
+            cv2.namedWindow("image")
         print("Connected by",addr)
 
         while True:
@@ -141,11 +154,15 @@ if __name__ == '__main__':
             image = np.fromstring(stringData, dtype='uint8')
             decoded_image = cv2.imdecode(image, 1)
            
-            scores, boxes = im_detect(net, decoded_image)
-            demo(net, decoded_image)
-            cv2.waitKey(1)
-            conn.send("success")
+            #scores, boxes = im_detect(net, decoded_image)
+            classes = demo(net, decoded_image, args.return_boxes)
+            if not args.return_boxes:
+                cv2.waitKey(1)
+            stringClasses = json.dumps(classes)
+            conn.send(str(len(stringClasses)).ljust(16))
+            conn.send(stringClasses)
 
-        cv2.destroyWindow("image")
+        if not args.return_boxes:
+            cv2.destroyWindow("image")
         conn.close()
         print("connection closed")
