@@ -26,11 +26,15 @@ class imagenet(imdb):
         self._image_set = image_set
         self._data_path = os.path.join(cfg.DATA_DIR, "imagenet")
         
-        self._class_wnids = {
-            'cup': 'n03147509',
-            'glasses': 'n04272054'
-        }
-        self._classes = ('__background__', self._class_wnids['cup'], self._class_wnids['glasses'])
+        self._class_wnids = [
+            ('background', 'background'),
+            ('cup', 'n03147509'),
+            ('glasses', 'n04272054'),
+            ('tool', 'n04451818'),
+            ('laptop', 'n03642806'),
+            ('chair', 'n03001627')
+        ]
+        self._classes = tuple([class_[0] for class_ in self._class_wnids])
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
         print(self._class_to_ind)
         self._xml_path = os.path.join(self._data_path, "Annotations")
