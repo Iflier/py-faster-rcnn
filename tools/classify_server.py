@@ -25,7 +25,7 @@ import caffe, os, sys, cv2
 import argparse
 import socket
 
-CLASSES = ('__background__', 'cup', 'glasses')
+CLASSES = ('__background__', 'cup', 'glasses', 'tool', 'laptop', 'chair')
 
 NETS = {'vgg16': ('VGG16',
                   'VGG16_faster_rcnn_final.caffemodel'),
@@ -148,7 +148,7 @@ if __name__ == '__main__':
         while True:
             length = recvall(conn,16)
 
-            if not length: continue;
+            if not length: break;
 
             stringData = recvall(conn, int(length))
             image = np.fromstring(stringData, dtype='uint8')

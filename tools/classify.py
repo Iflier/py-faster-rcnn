@@ -116,9 +116,11 @@ if __name__ == '__main__':
     args = parse_args()
 
 
-    prototxt = os.path.join(cfg.ROOT_DIR, 'models/imagenet', NETS[args.demo_net][0], 'faster_rcnn_alt_opt', 'faster_rcnn_test.pt')
-    caffemodel = os.path.join(cfg.ROOT_DIR, 'output/faster_rcnn_alt_opt/imagenet/'+ NETS[args.demo_net][0] +'_faster_rcnn_final.caffemodel')
+    #prototxt = os.path.join(cfg.ROOT_DIR, 'models/imagenet', NETS[args.demo_net][0], 'faster_rcnn_alt_opt', 'faster_rcnn_test.pt')
+    #caffemodel = os.path.join(cfg.ROOT_DIR, 'output/faster_rcnn_alt_opt/imagenet/'+ NETS[args.demo_net][0] +'_faster_rcnn_final.caffemodel')
 
+    prototxt = os.path.join(cfg.ROOT_DIR, 'models/imagenet', NETS[args.demo_net][0], 'faster_rcnn_end2end', 'test.prototxt')
+    caffemodel = os.path.join(cfg.ROOT_DIR, 'output/faster_rcnn_end2end/imagenet/'+ args.demo_net + '_faster_rcnn_iter_80000.caffemodel')
 
     if not os.path.isfile(caffemodel):
         raise IOError(('{:s} not found.\nHave you already run ./tools/train_faster_rcnn_alt_opt.py to train the model?').format(caffemodel))
