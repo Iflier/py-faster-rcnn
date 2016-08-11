@@ -64,15 +64,17 @@ def demo(net, im, return_boxes):
     NMS_THRESH = 0.3
     classes = {}
     for cls_ind, cls in enumerate(CLASSES[1:]):
-        cls_ind += 1 # because we skipped background
-        cls_boxes = boxes[:, 4*cls_ind:4*(cls_ind + 1)]
-        cls_scores = scores[:, cls_ind]
-        dets = np.hstack((cls_boxes,
-                          cls_scores[:, np.newaxis])).astype(np.float32)
-        keep = nms(dets, NMS_THRESH)
-        dets = dets[keep, :]
-        bboxes = vis_detections(im, cls, dets, return_boxes, thresh=CONF_THRESH)
-        classes[cls] = bboxes
+        try:
+            cls_ind += 1 # because we skipped background
+            cls_boxes = boxes[:, 4*cls_ind:4*(cls_ind + 1)]
+            cls_scores = scores[:, cls_ind]
+            dets = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
+            keep = nms(dets, NMS_THRESH)
+            dets = dets[keep, :]
+            bboxes = vis_detections(im, cls, dets, return_boxes, thresh=CONF_THRESH)
+            classes[cls] = bboxes
+        except Exception as e:
+            continue
     if not return_boxes:
         cv2.imshow("image", im)
     return classes
